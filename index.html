@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>CYBER ELEPHANT.EXE - Hacker Matrix Runner</title>
+  <meta name="description" content="A badass Hacker Matrix terminal runner game featuring an Elephant protagonist, matrix code rain, cyber obstacles, synth audio, and hacker powerups!" />
+  <!-- Google Fonts: Share Tech Mono & Press Start 2P -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Press+Start+2P&family=Outfit:wght@600;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="crt-overlay"></div>
+  <div class="app-container">
+    <!-- Terminal Header / HUD -->
+    <header class="game-header">
+      <div class="logo-group">
+        <span class="hero-badge">🐘</span>
+        <h1 class="game-title">&gt; ELEPHANT.<span>EXE</span></h1>
+      </div>
+      <div class="hud-bar">
+        <div class="hud-item">
+          <span class="hud-label">[MAX_BYTE]</span>
+          <span id="high-score-display" class="hud-value">00000</span>
+        </div>
+        <div class="hud-item score-box">
+          <span class="hud-label">[BYTES_RUN]</span>
+          <span id="score-display" class="hud-value">00000</span>
+        </div>
+        <button id="btn-sound" class="icon-btn" title="Toggle Audio Synth (M)">
+          <span class="icon">🔊</span>
+        </button>
+        <button id="btn-pause" class="icon-btn" title="Pause System (P)">
+          <span class="icon">⏸️</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Game Canvas Container -->
+    <main class="game-wrapper">
+      <canvas id="gameCanvas" width="900" height="350"></canvas>
+
+      <!-- Active Hacker Powerup Bar -->
+      <div id="powerup-bar" class="powerup-bar hidden">
+        <span id="powerup-icon" class="powerup-icon">⚡</span>
+        <span id="powerup-name" class="powerup-name">ROOT OVERRIDE</span>
+        <div class="powerup-meter">
+          <div id="powerup-fill" class="powerup-fill"></div>
+        </div>
+      </div>
+
+      <!-- Start Terminal Overlay -->
+      <div id="overlay-start" class="overlay active">
+        <div class="overlay-card hacker-terminal">
+          <div class="terminal-header-bar">
+            <span class="dot red"></span>
+            <span class="dot yellow"></span>
+            <span class="dot green"></span>
+            <span class="terminal-title">bash --run-elephant.sh</span>
+          </div>
+
+          <div class="avatar-preview-box">
+            <div id="hero-avatar" class="hero-avatar">🐘</div>
+          </div>
+          <h2>INITIATE RUNNER?</h2>
+          <p class="subtitle">&gt; Press <kbd>SPACE</kbd> or <kbd>▲</kbd> to Jump | <kbd>▼</kbd> to Duck</p>
+
+          <!-- Elephant Skin Selector -->
+          <div class="skin-selector">
+            <span class="selector-title">[SELECT_ELEPHANT_MODULE]:</span>
+            <div class="skin-options">
+              <button class="skin-btn active" data-skin="matrix" title="Matrix Cyber Green Elephant">
+                <span class="skin-preview matrix">🐘</span>
+                <span>Matrix</span>
+              </button>
+              <button class="skin-btn" data-skin="neon" title="Neon Cyan Elephant">
+                <span class="skin-preview neon">🐘</span>
+                <span>Cyber</span>
+              </button>
+              <button class="skin-btn" data-skin="phantom" title="Phantom Violet Elephant">
+                <span class="skin-preview phantom">🐘</span>
+                <span>Phantom</span>
+              </button>
+              <button class="skin-btn" data-skin="gold" id="gold-skin-btn" title="Golden Elephant (Requires 2000 High Score)">
+                <span class="skin-preview gold">🔒</span>
+                <span>Gold</span>
+              </button>
+            </div>
+          </div>
+
+          <button id="btn-start" class="btn-primary hacker-btn">
+            <span>[ EXECUTE RUN ]</span>
+            <span class="play-icon">⚡</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- System Crash / Game Over Overlay -->
+      <div id="overlay-gameover" class="overlay hidden">
+        <div class="overlay-card hacker-terminal danger-terminal">
+          <div class="crash-icon">☠️</div>
+          <h2 class="gameover-text">SYSTEM CRASHED</h2>
+          
+          <div class="score-summary">
+            <div class="summary-row">
+              <span>BYTES EXECUTED:</span>
+              <span id="final-score" class="highlight-score">0</span>
+            </div>
+            <div class="summary-row">
+              <span>SYSTEM RECORD:</span>
+              <span id="final-high-score">0</span>
+            </div>
+            <div id="new-record-tag" class="new-record hidden">&gt;&gt; ROOT HIGH SCORE BREACHED! &lt;&lt;</div>
+          </div>
+
+          <button id="btn-restart" class="btn-primary hacker-btn restart-btn">
+            <span>[ REBOOT SYSTEM ]</span>
+            <span class="restart-icon">🔄</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- System Pause Overlay -->
+      <div id="overlay-pause" class="overlay hidden">
+        <div class="overlay-card hacker-terminal">
+          <h2>SYSTEM PAUSED</h2>
+          <p>&gt; Press <kbd>P</kbd> or click button to resume execution</p>
+          <button id="btn-resume" class="btn-primary hacker-btn">
+            <span>[ RESUME EXECUTION ]</span>
+            <span>▶</span>
+          </button>
+        </div>
+      </div>
+    </main>
+
+    <!-- Mobile Controls -->
+    <div class="touch-controls">
+      <button id="touch-duck" class="touch-btn duck-btn">
+        <span class="touch-icon">👇</span>
+        <span>DUCK / DROP</span>
+      </button>
+      <button id="touch-jump" class="touch-btn jump-btn">
+        <span class="touch-icon">👆</span>
+        <span>JUMP / DOUBLE JUMP</span>
+      </button>
+    </div>
+
+    <!-- Hacker Terminal Instructions Footer -->
+    <footer class="game-footer">
+      <div class="guide-list">
+        <div class="guide-item"><span class="key-badge">SPACE / ▲</span> Jump (Double Tap for Trunk Boost)</div>
+        <div class="guide-item"><span class="key-badge">▼</span> Duck under Drones & Malware</div>
+        <div class="guide-item"><span class="key-badge">🛡️</span> Firewall Shield</div>
+        <div class="guide-item"><span class="key-badge">⚡</span> Quantum Speed</div>
+        <div class="guide-item"><span class="key-badge">🛸</span> Flying Jetpack</div>
+      </div>
+    </footer>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>

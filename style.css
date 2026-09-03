@@ -1,0 +1,548 @@
+/* ==========================================================================
+   CYBER ELEPHANT.EXE - HACKER MATRIX THEME STYLESHEET
+   Aesthetic: CRT Terminal Matrix Black + Phosphor Green & Cyber Cyan
+   ========================================================================== */
+
+:root {
+  --bg-primary: #020704;
+  --bg-secondary: #06150b;
+  --card-bg: rgba(5, 20, 11, 0.92);
+  --card-border: rgba(0, 255, 102, 0.35);
+  
+  --matrix-green: #00ff66;
+  --matrix-glow: #00ff41;
+  --cyber-cyan: #00f3ff;
+  --alert-red: #ff0055;
+  --amber-gold: #ffb700;
+
+  --text-main: #00ff66;
+  --text-bright: #ffffff;
+  --text-muted: #4e8760;
+  
+  --font-mono: 'Share Tech Mono', monospace;
+  --font-arcade: 'Press Start 2P', monospace;
+
+  --shadow-matrix: 0 0 15px rgba(0, 255, 102, 0.4);
+  --shadow-alert: 0 0 20px rgba(255, 0, 85, 0.5);
+  --radius-lg: 8px;
+  --radius-md: 4px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+body {
+  background-color: var(--bg-primary);
+  background-image: 
+    radial-gradient(circle at 50% 20%, rgba(0, 255, 102, 0.08) 0%, transparent 60%),
+    linear-gradient(to bottom, #010402 0%, #05140b 100%);
+  color: var(--text-main);
+  font-family: var(--font-mono);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow-x: hidden;
+  padding: 16px;
+  position: relative;
+}
+
+/* CRT Scanlines Overlay */
+.crt-overlay {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(
+    rgba(18, 16, 16, 0) 50%, 
+    rgba(0, 0, 0, 0.25) 50%
+  );
+  background-size: 100% 4px;
+  z-index: 99;
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+.app-container {
+  width: 100%;
+  max-width: 960px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  z-index: 1;
+}
+
+/* ==========================================================================
+   HEADER & TERMINAL HUD
+   ========================================================================== */
+.game-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  padding: 12px 20px;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-matrix);
+}
+
+.logo-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.hero-badge {
+  font-size: 1.8rem;
+  filter: drop-shadow(0 0 10px var(--matrix-green));
+  animation: pulse-ele 2s infinite ease-in-out;
+}
+
+@keyframes pulse-ele {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.12); }
+}
+
+.game-title {
+  font-family: var(--font-mono);
+  font-size: 1.4rem;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  color: var(--matrix-green);
+  text-shadow: 0 0 10px rgba(0, 255, 102, 0.7);
+}
+
+.game-title span {
+  color: var(--cyber-cyan);
+  text-shadow: 0 0 10px rgba(0, 243, 255, 0.7);
+}
+
+.hud-bar {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.hud-item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.hud-label {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.hud-value {
+  font-family: var(--font-arcade);
+  font-size: 1.05rem;
+  color: var(--cyber-cyan);
+  text-shadow: 0 0 8px rgba(0, 243, 255, 0.6);
+}
+
+.score-box .hud-value {
+  color: var(--matrix-green);
+  text-shadow: 0 0 8px rgba(0, 255, 102, 0.7);
+}
+
+.icon-btn {
+  background: rgba(0, 255, 102, 0.08);
+  border: 1px solid var(--matrix-green);
+  color: var(--matrix-green);
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-md);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.icon-btn:hover {
+  background: var(--matrix-green);
+  color: #000;
+  box-shadow: var(--shadow-matrix);
+  transform: translateY(-2px);
+}
+
+/* ==========================================================================
+   GAME CANVAS & POWERUP BAR
+   ========================================================================== */
+.game-wrapper {
+  position: relative;
+  width: 100%;
+  background: #010603;
+  border-radius: var(--radius-lg);
+  border: 2px solid var(--card-border);
+  box-shadow: 0 0 25px rgba(0, 255, 102, 0.25);
+  overflow: hidden;
+}
+
+canvas#gameCanvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 900 / 350;
+  background: transparent;
+}
+
+/* Hacker Powerup Bar */
+.powerup-bar {
+  position: absolute;
+  top: 14px;
+  left: 18px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(2, 10, 5, 0.92);
+  border: 1px solid var(--cyber-cyan);
+  padding: 6px 14px;
+  border-radius: var(--radius-md);
+  z-index: 5;
+  box-shadow: 0 0 12px rgba(0, 243, 255, 0.4);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.powerup-bar.hidden {
+  opacity: 0;
+  transform: translateY(-10px);
+  pointer-events: none;
+}
+
+.powerup-icon {
+  font-size: 1.1rem;
+}
+
+.powerup-name {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: var(--cyber-cyan);
+  letter-spacing: 1px;
+}
+
+.powerup-meter {
+  width: 80px;
+  height: 6px;
+  background: rgba(0, 255, 102, 0.15);
+  border: 1px solid var(--matrix-green);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.powerup-fill {
+  width: 100%;
+  height: 100%;
+  background: var(--matrix-green);
+  box-shadow: 0 0 8px var(--matrix-green);
+  transition: width 0.1s linear;
+}
+
+/* ==========================================================================
+   TERMINAL OVERLAYS
+   ========================================================================== */
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(1, 6, 3, 0.88);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+  padding: 20px;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.overlay.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.hacker-terminal {
+  width: 100%;
+  max-width: 440px;
+  padding: 24px;
+  border-radius: var(--radius-lg);
+  background: var(--card-bg);
+  border: 1.5px solid var(--matrix-green);
+  box-shadow: 0 0 30px rgba(0, 255, 102, 0.3);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  position: relative;
+}
+
+.danger-terminal {
+  border-color: var(--alert-red);
+  box-shadow: var(--shadow-alert);
+}
+
+.terminal-header-bar {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(0, 255, 102, 0.2);
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+.dot.red { background: #ff5f56; }
+.dot.yellow { background: #ffbd2e; }
+.dot.green { background: #27c93f; }
+
+.terminal-title {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-left: 6px;
+}
+
+.avatar-preview-box {
+  width: 72px;
+  height: 72px;
+  background: rgba(0, 255, 102, 0.05);
+  border: 2px dashed var(--matrix-green);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2.2rem;
+  box-shadow: var(--shadow-matrix);
+}
+
+.hacker-terminal h2 {
+  font-family: var(--font-mono);
+  font-size: 1.6rem;
+  color: var(--matrix-green);
+  letter-spacing: 1px;
+  text-shadow: 0 0 10px var(--matrix-green);
+}
+
+.subtitle {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+kbd {
+  background: rgba(0, 255, 102, 0.12);
+  border: 1px solid var(--matrix-green);
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-family: var(--font-arcade);
+  font-size: 0.65rem;
+  color: var(--matrix-green);
+}
+
+/* Elephant Skin Selector */
+.skin-selector {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+}
+
+.selector-title {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-weight: 700;
+}
+
+.skin-options {
+  display: flex;
+  gap: 10px;
+}
+
+.skin-btn {
+  background: rgba(0, 255, 102, 0.05);
+  border: 1px solid rgba(0, 255, 102, 0.25);
+  color: var(--text-main);
+  padding: 6px 10px;
+  border-radius: var(--radius-md);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  transition: all 0.2s ease;
+}
+
+.skin-btn:hover {
+  background: rgba(0, 255, 102, 0.15);
+}
+
+.skin-btn.active {
+  background: rgba(0, 255, 102, 0.25);
+  border-color: var(--matrix-green);
+  box-shadow: var(--shadow-matrix);
+}
+
+.skin-preview {
+  font-size: 1.2rem;
+}
+
+/* Terminal Buttons */
+.hacker-btn {
+  width: 100%;
+  padding: 12px 20px;
+  border: 1.5px solid var(--matrix-green);
+  border-radius: var(--radius-md);
+  background: rgba(0, 255, 102, 0.15);
+  color: var(--matrix-green);
+  font-family: var(--font-mono);
+  font-size: 1.05rem;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.2s ease;
+  box-shadow: var(--shadow-matrix);
+}
+
+.hacker-btn:hover {
+  background: var(--matrix-green);
+  color: #000;
+  box-shadow: 0 0 25px var(--matrix-green);
+  transform: translateY(-2px);
+}
+
+.restart-btn {
+  border-color: var(--alert-red);
+  background: rgba(255, 0, 85, 0.15);
+  color: var(--alert-red);
+  box-shadow: var(--shadow-alert);
+}
+
+.restart-btn:hover {
+  background: var(--alert-red);
+  color: #fff;
+  box-shadow: 0 0 25px var(--alert-red);
+}
+
+/* Score Summary */
+.score-summary {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  padding: 12px 16px;
+  border-radius: var(--radius-md);
+  border: 1px dashed rgba(0, 255, 102, 0.3);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.highlight-score {
+  font-family: var(--font-arcade);
+  color: var(--matrix-green);
+}
+
+#final-high-score {
+  font-family: var(--font-arcade);
+  color: var(--cyber-cyan);
+}
+
+.new-record {
+  margin-top: 4px;
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: var(--amber-gold);
+  animation: pulse-ele 1s infinite;
+}
+
+.crash-icon {
+  font-size: 2.8rem;
+}
+
+/* Touch Controls */
+.touch-controls {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+}
+
+.touch-btn {
+  flex: 1;
+  padding: 14px;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  color: var(--matrix-green);
+  border-radius: var(--radius-md);
+  font-family: var(--font-mono);
+  font-weight: 800;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: all 0.15s ease;
+}
+
+.touch-btn:active {
+  background: var(--matrix-green);
+  color: #000;
+}
+
+.jump-btn {
+  flex: 2;
+  border-color: var(--matrix-green);
+}
+
+/* Footer Guide */
+.game-footer {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  padding: 10px 16px;
+  border-radius: var(--radius-lg);
+}
+
+.guide-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 14px;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.guide-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.key-badge {
+  background: rgba(0, 255, 102, 0.1);
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-family: var(--font-arcade);
+  font-size: 0.6rem;
+  color: var(--matrix-green);
+}
